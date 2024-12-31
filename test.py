@@ -16,22 +16,27 @@ layout = [[sg.MenubarCustom(menu_def, pad=(0,0), k='-CUST MENUBAR-')],
               [sg.Button(key=f"-CLEAR-", button_text="Clear", font='bold 14', bind_return_key=True, k='-BUTTON-')],
             ] # custom layout definition
 
-user_input = [for {i} in int(input(getattr("user_input", sg.Multiline)))] # user input for tasks
-tasks = [f"Task {i}" for i in range(f"{user_input}")] # defining tasks that need to be appended to this list
+#tasks = [f"Task {i}" for i in range(f"{user_input}")] # defining tasks that need to be appended to this list
 listItem = [] # numerically ordering said tasks
-sg.Multiline.pack(); # printing the tasks to the window
+sg.Multiline(); # printing the tasks to the window
+window=sg.Window("2Do", layout, finalize=True) # window title
+while True:
+        event, values = window.read()
+        if event == sg.WINDOW_CLOSED or event == "Exit":
+            break
+        elif event == "-APPEND-":
+            tasks.append(values['-MLINE-'])
+            print(tasks)  # This should output to the multiline element
+        elif event == "-CLEAR-":
+            window['-MLINE-'].update('')
+        for i, task in enumerate(tasks):
+            listItem.append([sg.Text(task), sg.Button("Add", key=f"-APPEND_{i}"), sg.Button("Delete", key=f"-DELETE_{i}-")])
 
-for i, task in enumerate(tasks):
-        listItem.append([sg.Text(tasks), sg.Button("Add", key=f"-APPEND_{i}"), sg.Button("Delete", key=f"-DELETE_{i}-")])
-    
 layout.extend(listItem)
 
 window = sg.Window("Marcs App", layout)
 
-while True:
-    event, values = window.read()
-    if event == sg.WINDOW_CLOSED or event == "Exit":
-        break
+
 
 window.close()
 
